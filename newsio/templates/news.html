@@ -1,0 +1,13 @@
+{% extends "layout.html" %}
+
+{% block body %}
+
+<h1>News Results</h1>
+
+{% for article in results %}
+<div class=" article">
+    <h2>{{ article.title }}</h2>
+    <p>{{ article.description }}</p>
+</div>
+{% endfor %}
+{% endblock %}
