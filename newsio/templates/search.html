@@ -2,12 +2,13 @@
 
 {% block body %}
 <div>
-    <h1 class="d-flex p-2 justify-content-md-center active ">Results for {{inTitle}}</h1>
+  <h1 class="d-flex p-2 justify-content-md-center active ">Results for {{inTitle}}</h1>
 </div>
 {% for article in result %}
-  <div class=" article">
-    <h2>{{ article.title }}</h2>
-    <p>{{ article.description }}</p>
-  </div>
-  {% endfor %}
+<div class=" article">
+  <h2>{{ article.title }}</h2>
+  <p>{{ article.name }}</p>
+  <a href="{{ article.url }}">View More</a>
+</div>
+{% endfor %}
 {% endblock %}
