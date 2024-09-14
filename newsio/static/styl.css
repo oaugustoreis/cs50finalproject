@@ -5,6 +5,7 @@
 }
 
 .article{
+    padding: 10px;
     display: flex;
     margin: 10px;
     flex-direction: column;
@@ -13,7 +14,8 @@
 }
 .article:hover{
     transition: .2s;
-    background-color: rgb(238, 238, 238);
+    background-color: rgb(255, 254, 254);
+    box-shadow: rgba(0, 0, 0, 0.02) 0px 1px 3px 0px, rgba(27, 31, 35, 0.15) 0px 0px 0px 1px;
 }
 .article h2{
     width: 800px;
@@ -31,6 +33,13 @@
     margin-left: 10px;
     width: 400px;
 } 
+.button-32{
+    font-weight: 500;
+    height: 44px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
 .button-31 {
   background-color: #222;
   border-radius: 4px;
@@ -43,7 +52,7 @@
   font-size: 16px;
   font-weight: 700;
   line-height: 1.5;
-  margin: 0;
+  margin: 10px;
   max-width: none;
   min-height: 44px;
   min-width: 10px;
@@ -62,4 +71,10 @@
 .button-31:hover,
 .button-31:focus {
   color: #fff;
+}
+
+.page-number{
+    font-weight: 500;
+    font-size: 24px;
+    margin: 0 10px;
 }

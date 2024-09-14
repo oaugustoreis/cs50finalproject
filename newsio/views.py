@@ -10,6 +10,9 @@ from .models import Category
 def index(request):
     category = Category.objects.all()
     results=get_news(fromDate=None, toDate=None, topic=None, category=None, indexView=True)
+    paginator = Paginator(results, 10)
+    # paginator.page
+    results = paginator.get_page(request.GET.get('page'))
     return render(request, "layout.html",{
         "results": results,
         "category": category
@@ -58,13 +61,14 @@ def get_news(fromDate, toDate, topic,category, indexView):
     results=[]
     articles = data['articles']
     for article in articles:
-        result = {
-            'title': article['title'],
-            'description': article['description'],
-            'url': article['url'],
-            'urlimage': article['urlToImage'],
-        }
-        results.append(result)
+        if article['urlToImage']:
+            result = {
+                'title': article['title'],
+                'description': article['description'],
+                'url': article['url'],
+                'urlimage': article['urlToImage'],
+            }
+            results.append(result)
     return results
 
 
@@ -85,3 +89,7 @@ def search_view(request):
     else:
          return HttpResponseRedirect(reverse("index")) 
         
+
+def saved_view(request):
+    
+    return render(request, 'saved.html')

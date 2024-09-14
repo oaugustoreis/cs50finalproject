@@ -2,6 +2,13 @@
 
 <!DOCTYPE html>
 <html lang="en">
+<script>
+  function save(url, tittle) {
+    console.log(tittle);
+
+  }
+
+</script>
 
 <head>
   <title>
@@ -21,6 +28,9 @@
       <a class="nav-link" href="{% url 'index' %}">Home</a>
     </li>
     {% if user.is_authenticated %}
+    <li class="nav-item">
+      <a class="nav-link" href="{% url 'saved' %}">Saved News</a>
+    </li>
     <li class="nav-item">
       <a class="nav-link" href="{% url 'logout' %}">Log Out</a>
     </li>
@@ -53,9 +63,25 @@
     </div>
   </form>
   {% endif %}
-
-
-  <h1 class="d-flex p-2 justify-content-md-center active">Top Articles</h1>
+  <div class="d-flex p-2 justify-content-md-center active">
+    <nav aria-label="Page navigation example">
+      <ul class="pagination">
+        {% if results.has_previous %}
+        <li class="page-item">
+          <a class="page-link" href="?page={{ results.previous_page_number }}">Previous</a>
+        </li>
+        {% endif %}
+        <li class="page-number">
+          Page {{ results.number }} of {{ results.paginator.num_pages }}. 
+        </li>
+        {% if results.has_next %}
+        <li class="page-item">
+          <a class="page-link" href="?page={{ results.next_page_number }}">Next</a>
+        </li>
+        {% endif %}
+      </ul>
+    </nav>
+  </div>
   <section class="section-articles p-2 justify-content-md-center active">
     {% for article in results %}
     {% if article.urlimage %}
@@ -66,12 +92,16 @@
         <div>
           <p>{{ article.description }}</p>
           <a class="button-31" href="{{ article.url }}">View More</a>
+          <a href="{{ article.url }}"></a>
+          <input class="button-32" onclick="save('{{ article.url }}','{{ article.title }}')" type="button"
+            value="Save for later">
         </div>
       </div>
     </div>
     {% endif %}
 
     {% endfor %}
+
   </section>
 
   {% block body %}
