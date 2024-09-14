@@ -2,13 +2,6 @@
 
 <!DOCTYPE html>
 <html lang="en">
-<script>
-  function save(url, tittle) {
-    console.log(tittle);
-
-  }
-
-</script>
 
 <head>
   <title>
@@ -20,6 +13,32 @@
     integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous" />
   <link rel="stylesheet" type="text/css" href=" {% static '/styl.css' %} ">
 </head>
+<script>
+  function getCookie(name) {
+    const value = `; ${document.cookie}`;
+    const parts = value.split(`; ${name}=`);
+    if (parts.length == 2) return parts.pop().split(';').shift();
+  }
+  function save(url, title, description) {
+    var btn = document.getElementById(`btn_of_${url}`)
+    if (btn.value === 'Save for later') {
+      btn.value = 'Saved';
+    } else {
+      btn.value = 'Save for later';
+    }
+    var xhr = new XMLHttpRequest();
+    xhr.open('POST', '/saved/', true); // Replace with your Django view URL
+    xhr.setRequestHeader('Content-Type', 'application/json');
+    xhr.setRequestHeader('X-CSRFToken', getCookie("csrftoken"));
+    xhr.send(JSON.stringify({
+      'url': url,
+      'title': title,
+      'description': description
+    }));
+
+  }
+
+</script>
 
 <body>
   <h1 class="d-flex p-2 justify-content-md-center active">News.io</h1>
@@ -72,7 +91,7 @@
         </li>
         {% endif %}
         <li class="page-number">
-          Page {{ results.number }} of {{ results.paginator.num_pages }}. 
+          Page {{ results.number }} of {{ results.paginator.num_pages }}.
         </li>
         {% if results.has_next %}
         <li class="page-item">
@@ -92,8 +111,8 @@
         <div>
           <p>{{ article.description }}</p>
           <a class="button-31" href="{{ article.url }}">View More</a>
-          <a href="{{ article.url }}"></a>
-          <input class="button-32" onclick="save('{{ article.url }}','{{ article.title }}')" type="button"
+          <input class="button-32" id="btn_of_{{article.url}}"
+            onclick="save('{{ article.url }}','{{ article.title }}','{{ article.description }}')" type="button"
             value="Save for later">
         </div>
       </div>

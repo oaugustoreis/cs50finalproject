@@ -4,14 +4,13 @@ from django.contrib.auth.models import User
 from django.core.paginator import Paginator
 from django.contrib.auth import authenticate, logout, login
 from django.urls import reverse
-import requests
-from .models import Category
+import requests, json
+from .models import Category, Saved
 
 def index(request):
     category = Category.objects.all()
     results=get_news(fromDate=None, toDate=None, topic=None, category=None, indexView=True)
     paginator = Paginator(results, 10)
-    # paginator.page
     results = paginator.get_page(request.GET.get('page'))
     return render(request, "layout.html",{
         "results": results,
@@ -26,7 +25,7 @@ def register_view(request):
        user = User.objects.filter(username=username).first()
        if user:
            return HttpResponse("Ja existe") 
-       user = User.objects.create(username=username, email=email)
+       user = User.objects.create(username=username, email=email)   
        user.save()
        return HttpResponseRedirect(reverse("index")) 
     else:
@@ -40,9 +39,7 @@ def login_view(request):
     if request.method == "POST":
        username = request.POST['username']
        password = request.POST['password'] 
-
        user = authenticate(username=username, password=password)
-
        if user:
           login(request, user)
           return HttpResponseRedirect(reverse("index"))
@@ -90,6 +87,17 @@ def search_view(request):
          return HttpResponseRedirect(reverse("index")) 
         
 
+from django.http import JsonResponse
 def saved_view(request):
-    
-    return render(request, 'saved.html')
+    if request.method == 'POST':
+        data = json.loads(request.body)
+        url = data['url']
+        title = data['title']
+        description = data['description']
+
+        # Save the data to your database
+        url_saved = Saved.objects.filter(url=url).first()
+        if not url_saved:
+            saved_url = Saved(title=title, url=url, description=description)
+            saved_url.save()
+        return JsonResponse({'message': 'URL saved successfully'}) 
