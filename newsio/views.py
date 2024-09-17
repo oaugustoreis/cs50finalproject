@@ -9,10 +9,12 @@ from .models import Category, Saved
 
 def index(request):
     category = Category.objects.all()
+    savedUrl = Saved.objects.all()
     results=get_news(fromDate=None, toDate=None, topic=None, category=None, indexView=True)
     paginator = Paginator(results, 10)
     results = paginator.get_page(request.GET.get('page'))
     return render(request, "layout.html",{
+        "savedUrl": savedUrl,
         "results": results,
         "category": category
     })
