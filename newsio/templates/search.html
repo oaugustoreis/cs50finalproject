@@ -2,13 +2,32 @@
 
 {% block body %}
 <div>
+  {% if inTitle %}
   <h1 class="d-flex p-2 justify-content-md-center active ">Results for {{inTitle}}</h1>
+  {% endif %}
 </div>
-{% for article in result %}
-<div class=" article">
-  <h2>{{ article.title }}</h2>
-  <p>{{ article.name }}</p>
-  <a href="{{ article.url }}">View More</a>
-</div>
-{% endfor %}
+<section class="section-articles p-2 justify-content-md-center active">
+  {% for article in result %}
+  {% if article.urlimage %}
+  <div class="article">
+    <h2>{{ article.title }}</h2>
+    <div class="article-container">
+      <img src="{{ article.urlimage }}" alt="">
+      <div>
+        <p>{{ article.description }}</p>
+        <div class="d-flex justify-content-md-center active">
+          <a class="button-31" href="{{ article.url }}">View More</a>
+          {% if user.is_authenticated %}
+          <input class="button-save" id="btn_of_{{article.url}}"
+            onclick="save(`{{ article.url }}`, `{{ article.title }}`, `{{ article.description }}`, `{{ article.urlimage }}`)"
+            type="button" value="Save for later">
+          {% endif %}
+        </div>
+      </div>
+    </div>
+  </div>
+  </div>
+  {% endif %}
+  {% endfor %}
+</section>
 {% endblock %}

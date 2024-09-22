@@ -4,51 +4,20 @@
 <html lang="en">
 
 <head>
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
   <title>
     {% block title %}
-    News feed
+    {{feed}}
     {% endblock %}
   </title>
   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
     integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous" />
   <link rel="stylesheet" type="text/css" href=" {% static '/styl.css' %} ">
+  <link rel="stylesheet" type="text/css" href=" {% static '/togglebutton.css' %} ">
 </head>
 
-<!-- JavaScript -->
-<script>
-  function getCookie(name) {
-    const value = `; ${document.cookie}`;
-    const parts = value.split(`; ${name}=`);
-    if (parts.length == 2) return parts.pop().split(';').shift();
-  }
-
-
-  function save(url, title, description, image_url) {
-    console.log(url, title, description, image_url);
-
-    var btn = document.getElementById(`btn_of_${url}`)
-    if (btn.value === 'Save for later') {
-      btn.value = 'Saved';
-    } else {
-      btn.value = 'Save for later';
-    }
-    var xhr = new XMLHttpRequest();
-    xhr.open('POST', '/saved/', true);
-    xhr.setRequestHeader('Content-Type', 'application/json');
-    xhr.setRequestHeader('X-CSRFToken', getCookie("csrftoken"));
-    xhr.send(JSON.stringify({
-      'url': url,
-      'title': title,
-      'description': description,
-      'image_url': image_url
-    }));
-  }
-
-</script>
-<!-- JavaScript -->
-
 <body>
-  <h1 class="d-flex p-2 justify-content-md-center active">News.io</h1>
+  <h1 class="title d-flex justify-content-md-center active">News.io </h1>
   <ul class="nav d-flex p-2 justify-content-md-center active">
     <li class="nav-item">
       <a class="nav-link" href="{% url 'index' %}">Home</a>
@@ -68,27 +37,47 @@
       <a class="nav-link" href="{% url 'register' %}">Register</a>
     </li>
     {% endif %}
+    <li>
+      <div class="toggle-container"></div>
+      <label class="switch">
+        <input onclick="toggleDarkMode()" type="checkbox">
+        <span class="slider round"></span>
+      </label>
+      </div>
+    </li>
   </ul>
   <hr />
   {% if user.is_authenticated %}
-  <form action="{% url 'search' %}" method="POST">
+  {% if category %}
+  <form class="form-search " action="{% url 'search' %}" method="POST">
     {% csrf_token %}
-    <div class="d-flex p-2 justify-content-md-center active ">
-      <div class="mx-2">
-        <label for="category">Select a category:</label>
+    <div class="container-c d-flex justify-content-md-center active ">
+      <div class="category">
+        <label for="category">Select a category:</label> <br>
         <select class="mx-2" name="category" id="category">
           {% for c in category %}
           <option value="{{ c.name }}">{{ c.name }}</option>
           {% endfor %}
         </select>
       </div>
-      <p class="mx-2">From: </p><input type="date" name="fromDate" id="fromDate">
-      <p class="mx-2">To: </p><input type="date" name="toDate" id="toDate">
-      <input class="mx-2" type="text" name="inTitle" id="inTitle" placeholder="Search for news...">
+      <div class="category">
+        <label for="input">From:</label><br>
+        <input type="date" name="fromDate" id="fromDate">
+      </div>
+      <div class="category">
+        <label for="input">To:</label><br>
+        <input type="date" name="toDate" id="toDate">
+      </div>
+    </div>
+    <div class="my-3 d-flex justify-content-md-center active category">
+      <input type="text" name="inTitle" id="inTitle" placeholder="Search for news...">
       <input type="submit" class="btn btn-primary mx-2" value="Search">
     </div>
   </form>
   {% endif %}
+
+  {% endif %}
+  {% if results.paginator.num_pages%}
   <div class="d-flex p-2 justify-content-md-center active">
     <nav aria-label="Page navigation example">
       <ul class="pagination">
@@ -108,6 +97,7 @@
       </ul>
     </nav>
   </div>
+  {% endif %}
   <section class="section-articles p-2 justify-content-md-center active">
     {% for article in results %}
     {% if article.urlimage %}
@@ -134,6 +124,60 @@
   </section>
   {% block body %}
   {% endblock %}
+
+  <!-- JavaScript -->
+  <script>
+    function toggleDarkMode() {
+      document.body.classList.toggle('dark-mode');
+    }
+    function saveDarkModePreference() {
+      localStorage.setItem('darkMode', document.body.classList.contains('dark-mode'));
+    }
+
+    function loadDarkModePreference() {
+      const isDarkMode = localStorage.getItem('darkMode') === 'true';
+      if (isDarkMode) {
+        document.body.classList.add('dark-mode');
+      }
+    }
+
+    loadDarkModePreference();
+
+    // Atualize a preferência do modo escuro quando o usuário altera o modo
+    document.body.addEventListener('click', () => {
+      saveDarkModePreference();
+    });
+    function getCookie(name) {
+      const value = `; ${document.cookie}`;
+      const parts = value.split(`; ${name}=`);
+      if (parts.length == 2) return parts.pop().split(';').shift();
+    }
+
+
+    function save(url, title, description, image_url) {
+      console.log(url, title, description, image_url);
+
+      var btn = document.getElementById(`btn_of_${url}`)
+      document.body.classList.toggle('dark-mode');
+      if (btn.value === 'Save for later') {
+        btn.value = 'Saved';
+      } else {
+        btn.value = 'Save for later';
+      }
+      var xhr = new XMLHttpRequest();
+      xhr.open('POST', '/saved/', true);
+      xhr.setRequestHeader('Content-Type', 'application/json');
+      xhr.setRequestHeader('X-CSRFToken', getCookie("csrftoken"));
+      xhr.send(JSON.stringify({
+        'url': url,
+        'title': title,
+        'description': description,
+        'image_url': image_url
+      }));
+    }
+  </script>
+  <!-- JavaScript -->
+
 </body>
 
 </html>

@@ -1,6 +1,28 @@
 {% extends "layout.html" %}
 
 {% block body %}
+<h1 class="text-center">Saved News</h1>
+<div>
+  <section class="section-articles">
+    {% for saved in savedUrl %}
+    <div class="article">
+      <h2>{{ saved.title }}</h2>
+      <div class="article-container">
+        <img src="{{ saved.image_url }}" alt="">
+        <div>
+          <p>{{ saved.description }}</p>
+          <div class="d-flex justify-content-center">
+            <a class="button-31" href="{{ saved.url }}">View More</a>
+            <input class="button-31" id="btn_of_{{saved.url}}" onclick="delete_saved(`{{ saved.url }}`)" type="button"
+              value="Remove">
+          </div>
+        </div>
+      </div>
+    </div>
+    {% endfor %}
+  </section>
+</div>
+
 <script>
   function delete_saved(url) {
     console.log(url)
@@ -14,31 +36,8 @@
     }));
 
     // Remove the article element from the DOM
-    var articleElement = btn.parentNode;
+    var articleElement = btn.parentNode.parentNode.parentNode.parentNode;
     articleElement.remove();
   }
-
 </script>
-<div>
-  <h1 class="d-flex p-2 justify-content-md-center active ">Saved News</h1>
-
-  <div class="article">
-    {% for saved in savedUrl %}
-    <div class="article">
-      <h2>{{ saved.title }}</h2>
-      <div class="article-container">
-        <img src="{{ saved.image_url }}" alt="">
-        <div>
-          <p>{{ saved.description }}</p>
-          <div class="d-flex justify-content-md-center active">
-            <a class="button-31" href="{{ saved.url }}">View More</a>
-            <input class="button-31" id="btn_of_{{saved.url}}" onclick="delete_saved(`{{ saved.url }}`)" type="button"
-              value="Save for later">
-          </div>
-        </div>
-      </div>
-    </div>
-    {% endfor %}
-  </div>
-</div>
 {% endblock %}

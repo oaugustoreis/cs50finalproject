@@ -16,7 +16,8 @@ def index(request):
     return render(request, "layout.html",{
         "savedUrl": savedUrl,
         "results": results,
-        "category": category
+        "category": category,
+        "feed":"News Feed"
     })
 
 
@@ -31,7 +32,9 @@ def register_view(request):
        user.save()
        return HttpResponseRedirect(reverse("index")) 
     else:
-       return render(request, 'register.html')
+       return render(request, 'register.html',{
+           "feed":"Register"
+       })
 
 def logout_view(request):
     logout(request)
@@ -46,7 +49,9 @@ def login_view(request):
           login(request, user)
           return HttpResponseRedirect(reverse("index"))
     else:
-       return render(request, 'login.html')
+       return render(request, 'login.html',{
+           "feed":"Login"
+       })
       
 
 def get_news(fromDate, toDate, topic,category, indexView):
@@ -83,7 +88,8 @@ def search_view(request):
             "fromDate": fromDate,
             "toDate": toDate,
             "result": results,
-            "category": Category.objects.all()
+            "category": Category.objects.all(),
+            "feed":"Search Results"
         })
     else:
          return HttpResponseRedirect(reverse("index")) 
@@ -117,5 +123,6 @@ def delete_saved(request):
 def read_later(request):
     savedUrl = Saved.objects.all()
     return render(request, 'saved.html', {
-        "savedUrl": savedUrl
+        "savedUrl": savedUrl,
+        "feed":"Saved Articles"
     })
