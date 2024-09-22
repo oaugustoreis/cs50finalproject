@@ -175,7 +175,11 @@ input {
     border-style: none;
     box-shadow: rgba(0, 0, 0, 0.02) 0px 1px 3px 0px, var(--text-color) 0px 0px 0px 1px;
 }
-.category label {
+.category{
+    margin: 5px;
+}
+.categorylabel {
+    margin: 5px;
     font-size: 16px;
 }
 
