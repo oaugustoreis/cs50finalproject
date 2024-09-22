@@ -96,10 +96,26 @@ def saved_view(request):
         url = data['url']
         title = data['title']
         description = data['description']
+        image_url = data['image_url']
 
         # Save the data to your database
         url_saved = Saved.objects.filter(url=url).first()
         if not url_saved:
-            saved_url = Saved(title=title, url=url, description=description)
+            saved_url = Saved(title=title, url=url, description=description, image_url=image_url)
             saved_url.save()
         return JsonResponse({'message': 'URL saved successfully'}) 
+def delete_saved(request):
+    if request.method == 'POST':
+        data = json.loads(request.body)
+        url = data['url']
+        Saved.objects.filter(url=url).delete()
+        return JsonResponse({'message': 'URL deleted successfully'})
+
+
+
+
+def read_later(request):
+    savedUrl = Saved.objects.all()
+    return render(request, 'saved.html', {
+        "savedUrl": savedUrl
+    })

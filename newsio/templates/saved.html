@@ -1,7 +1,44 @@
 {% extends "layout.html" %}
 
 {% block body %}
+<script>
+  function delete_saved(url) {
+    console.log(url)
+    var btn = document.getElementById(`btn_of_${url}`)
+    var xhr = new XMLHttpRequest();
+    xhr.open('POST', '/delete_saved/', true);
+    xhr.setRequestHeader('Content-Type', 'application/json');
+    xhr.setRequestHeader('X-CSRFToken', getCookie("csrftoken"));
+    xhr.send(JSON.stringify({
+      'url': url
+    }));
+
+    // Remove the article element from the DOM
+    var articleElement = btn.parentNode;
+    articleElement.remove();
+  }
+
+</script>
 <div>
   <h1 class="d-flex p-2 justify-content-md-center active ">Saved News</h1>
+
+  <div class="article">
+    {% for saved in savedUrl %}
+    <div class="article">
+      <h2>{{ saved.title }}</h2>
+      <div class="article-container">
+        <img src="{{ saved.image_url }}" alt="">
+        <div>
+          <p>{{ saved.description }}</p>
+          <div class="d-flex justify-content-md-center active">
+            <a class="button-31" href="{{ saved.url }}">View More</a>
+            <input class="button-31" id="btn_of_{{saved.url}}" onclick="delete_saved(`{{ saved.url }}`)" type="button"
+              value="Save for later">
+          </div>
+        </div>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
 </div>
 {% endblock %}
